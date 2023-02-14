@@ -1,0 +1,177 @@
+# OpenRISC ORBIS32 Instruction Set, v1.3
+
+#
+# Macros
+#
+macro halfAdd(result, left, right) {
+	CY = carry(left, right);
+	OV = scarry(left, right);
+	result = left + right;
+}
+
+macro fullAdd(result, left, right) {
+	local carry2 = zext(CY);
+	halfAdd(result, left, right);
+	CY = CY || carry(result, carry2);
+	OV = OV ^^ scarry(result, carry2);
+	result = result + carry2;
+}
+
+macro halfSub(result, left, right) {
+	CY = left < right;
+	OV = sborrow(left, right);
+	result = left - right;
+}
+
+macro mul64s(result, left, right) {
+	local left_ext:8  = sext(left);
+	local right_ext:8 = sext(right);
+	result = left_ext * right_ext;
+}
+
+macro mul64z(result, left, right) {
+	local left_ext:8  = zext(left);
+	local right_ext:8 = zext(right);
+	result = left_ext * right_ext;
+}
+
+macro getmac(var) {
+	var = zext(MACHI) << 32 | zext(MACLO);
+}
+
+macro setmac(var) {
+	MACHI = var(4);
+	MACLO = var:4;
+}
+
+#
+# Custom operations
+#
+define pcodeop csync;
+define pcodeop msync;
+define pcodeop psync;
+define pcodeop macsync;
+
+define pcodeop cust1;
+define pcodeop cust2;
+define pcodeop cust3;
+define pcodeop cust4;
+define pcodeop cust5;
+define pcodeop cust6;
+define pcodeop cust7;
+define pcodeop cust8;
+
+#define OP_R2_BT_ADDI_PFX 0x27
+#define OP_R2_BN_ADDI_PFX 0x07
+#define OP_R2_BG_ADDI_PFX 0x3F
+#define OP_R2_BN_SW_PFX   0x03
+#define OP_R2_BG_SW_PFX   0x3B
+#define OP_R2_ENTRI_PFX   0x17
+#define OP_R2_ENTRI_SUB   0x18
+#define OP_R2_STACK_PFX   0x20
+#https://github.com/xuzemin/mstar/blob/5d447aa5b54b60ede27d5fda42d481efa4b10ff8/Chakra3_017a0d6_20170731/core/driver/r2/r2_backtrace.c
+
+with : i16_decoder = 4 {
+
+	with : i32_opcode = 0x20 {
+
+	}
+	with : i32_opcode = 0x21 {
+		
+	}
+
+	:bt.mov i16_rD, i16_rA is i16_opcode = 0x22 & i16_rD & i16_rA { i16_rD = i16_rA; }
+	:bt.add i16_rD, i16_rA is i16_opcode = 0x23 & i16_rD & i16_rA { i16_rD = i16_rD + i16_rA; }
+
+	:bt.j i16_uimm0_10 is i16_opcode = 0x24 & i16_uimm0_10  { }
+	:bt.movhi i16_rD, i16_simm0_5 is i16_opcode = 0x25 & i16_rD & i16_simm0_5 { i16_rD = i16_simm0_5; }
+	:bt.movi i16_rD, i16_simm0_5 is i16_opcode = 0x26 & i16_rD & i16_simm0_5 { i16_rD = i16_simm0_5; }
+
+	:bt.addi i16_rD, i16_simm0_5 is i16_opcode = 0x27 & i16_rD & i16_simm0_5 { i16_rD = i16_rD + i16_simm0_5; }
+}
+
+with : i24_decoder = 1 {
+	# OP_R2_BN_ADDI_PFX 0x07
+	#:bn.addi i24_rD, i24_rA, i24_simm0_8 is i24_opcode = 0x07 & i24_rD & i24_rA & i24_simm0_8 { i24_rD = i24_rA + i24_simm0_8; }
+
+	:bn.jal i24_iK18 is i24_opcode = 0xA & i24_iK18 {  }
+	:bn.j i24_iK18 is i24_opcode = 0xB & i24_iK18 {  }
+	:bn.movhi i24_rD, i24_iK13 is i24_opcode = 0xD & i24_rD & i24_iK13 { i24_rD = i24_iK13; }
+}
+
+# 50 60 01 bn.ori r3,r0,0x1
+with : i24_decoder = 2 {
+
+	:bn.ori i24_rD, i24_rA, i24_iK is i24_opcode = 0x14 & i24_rD & i24_rA & i24_iK { i24_rD = i24_rA | i24_iK; }
+	:bn.andi i24_rD, i24_rA, i24_iK is i24_opcode = 0x15 & i24_rD & i24_rA & i24_iK { i24_rD = i24_rA & i24_iK; }
+}
+
+# C060011D bg.mtspr r0,r3,0x11
+# C0 F4 04 01 bg.movhi r7,0xA0201E00@hi
+# C8 C7 1E 00 bg.ori r6,r7,0x1E00
+# 300:   9c 21 fe e8                        l.addi     r1,r1,-0x118 ?? wat
+# 300:   FC21FEE4                     l.addi     r1,r1,-0x11C
+
+with : i32_decoder = 6 | i32_decoder = 7 {
+	#:l.addi i32_rD, i32_rA, i32_simm0_16 is i32_opcode = 0x27 & i32_rD & i32_rA & i32_simm0_16 { i32_rD = i32_rA + i32_simm0_16; }
+
+	with : i32_opcode = 0x30 {
+		:bg.movhi i32_rD, i32_uimm4_16 is i32_uimm0_4 = 0x1 & i32_rD & i32_uimm4_16 {} 
+
+		:bg.mtspr i32_rA, i32_rD, i32_uimm4_12 is i32_uimm0_4 = 0xd & i32_rA & i32_rD & i32_uimm4_12 {} 
+	}
+	
+
+	:bg.andi i32_rD, i32_rA, i32_uimm0_16 is i32_opcode = 0x31 & i32_rD & i32_rA & i32_uimm0_16 { i32_rD = i32_rA & i32_uimm0_16; }
+	:bg.ori i32_rD, i32_rA, i32_uimm0_16 is i32_opcode = 0x32 & i32_rD & i32_rA & i32_uimm0_16 { i32_rD = i32_rA | i32_uimm0_16; }
+	:bg.muli_maybe i32_rD, i32_rA, i32_simm0_16 is i32_opcode = 0x33 & i32_rD & i32_rA & i32_simm0_16 { i32_rD = i32_rA * i32_simm0_16; }
+
+	with : i32_opcode = 0x34 {
+		:bg.opcode_34 i32_rD is i32_rD {}
+	}
+	with : i32_opcode = 0x35 {
+		:bg.opcode_35 i32_rD is i32_rD {}
+	}
+
+	:bg.xori i32_rD, i32_rA, i32_uimm0_16 is i32_opcode = 0x36 & i32_rD & i32_rA & i32_uimm0_16 { i32_rD = i32_rA ^ i32_uimm0_16; }
+	:bg.addci_maybe i32_rD, i32_rA, i32_simm0_16 is i32_opcode = 0x37 & i32_rD & i32_rA & i32_simm0_16 { }
+
+    with : i32_opcode = 0x38 {
+        :bg.opcode_38 i32_rD is i32_rD {}
+    }
+    with : i32_opcode = 0x39 {
+        :bg.opcode_39 i32_rD is i32_rD {}
+    }
+    with : i32_opcode = 0x3A {
+        :bg.opcode_3A i32_rD, i32_rA, i32_simm0_16 is i32_rD & i32_rA & i32_simm0_16 { }
+    }
+    with : i32_opcode = 0x3B {
+        :bg.opcode_3B i32_rD is i32_rD {}
+    }
+    :bg.lbz_maybe i32_rD, i32_simm0_16 is i32_opcode = 0x3C & i32_rD & i32_simm0_16 { }
+    with : i32_opcode = 0x3D {
+        :bg.opcode_3D i32_rD is i32_rD {}
+    }
+    :bg.sb_maybe i32_rD, i32_simm0_16 is i32_opcode = 0x3E & i32_rD & i32_simm0_16 { }
+
+    # OP_R2_BG_ADDI_PFX 0x3F
+    :bg.addi i32_rD, i32_rA, i32_simm0_16 is i32_opcode = 0x3F & i32_rD & i32_rA & i32_simm0_16 { i32_rD = i32_rA + i32_simm0_16; }
+
+}
+
+:bn.inst24_0 is i24_decoder = 0 {  }
+:bn.inst24_1 is i24_decoder = 1 {  }
+:bn.inst24_2 is i24_decoder = 2 {  }
+:bn.inst24_3 is i24_decoder = 3 {  }
+
+# OP_R2_BT_ADDI_PFX 0x27
+:bt.inst16_4 is i16_decoder = 4 {  }
+#:bg.inst32_4 is i32_decoder = 4 {  }
+:bg.inst32_5 is i32_decoder = 5 {  }
+:bg.inst32_6 is i32_decoder = 6 {  }
+:bg.inst32_7 is i32_decoder = 7 {  }
+
+#
+# Instructions
+#
+#:l.cust8 is opcode = 0x3f { cust8(); }

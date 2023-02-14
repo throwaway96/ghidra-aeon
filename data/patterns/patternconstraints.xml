@@ -1,5 +1,5 @@
 <patternconstraints>
-  <language id="OpenRISC:BE:32:*">
-    <patternfile>OpenRISC_BE_patterns.xml</patternfile>
+  <language id="aeon:BE:32:*">
+    <patternfile>aeon_BE_patterns.xml</patternfile>
   </language>
 </patternconstraints>
