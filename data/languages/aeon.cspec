@@ -67,10 +67,10 @@
       </input>
       <output>
         <pentry minsize="1" maxsize="4">
-          <register name="r11" />
+          <register name="r3" />
         </pentry>
         <pentry minsize="5" maxsize="8">
-          <addr space="join" piece1="r11" piece2="r12" />
+          <addr space="join" piece1="r3" piece2="r4" />
         </pentry>
       </output>
       <unaffected>

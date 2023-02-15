@@ -135,8 +135,10 @@ with : i16_decoder = 4 {
 		    call [ea];
 		}
 		:bt.jr i16_rD is i16_uimm0_5 = 0x9 & i16_rD {
-			local ea = i16_rD;
-		    goto [ea];
+		    goto [i16_rD];
+		}
+		:bt.jr i16_rD is i16_uimm0_5 = 0x9 & i16_rD & i16_rD = 0x9 {
+		    return [i16_rD];
 		}
 	}
 
@@ -158,20 +160,20 @@ with : i16_decoder = 4 {
 
 with : i24_decoder = 0 | i24_decoder = 1 | i24_decoder = 2 | i24_decoder = 3 {
 
-	:bn.sw i24_simm0_8(i24_rA),i24_rD, is i24_opcode = 0x00 & i24_uimm0_2 = 0 & i24_rD & i24_rA & i24_simm0_8 { *:4 i24_rA+i24_simm0_8 = i24_rD; }
+	:bn.sw i24_simm0_8(i24_rA),i24_rD, is i24_opcode = 0x00 & i24_uimm0_2 = 0 & i24_rD & i24_rA & i24_simm0_8 { *:4 (i24_rA+i24_simm0_8) = i24_rD; }
 	:bn.op01 i24_rD, i24_rA, i24_simm0_8 is i24_opcode = 0x01 & i24_rD & i24_rA & i24_simm0_8 { }
 	:bn.op02 i24_rD, i24_rA, i24_simm0_8 is i24_opcode = 0x02 & i24_rD & i24_rA & i24_simm0_8 { }
 
 	with : i24_opcode = 0x03 {
-		:bn.sw i24_simm0_8(i24_rA),i24_rD, is i24_uimm0_2 = 0 & i24_rD & i24_rA & i24_simm0_8 { *:4 i24_rA+i24_simm0_8 = i24_rD; }
-		:bn.sh_1 i24_simm0_8(i24_rA),i24_rD, is i24_uimm0_2 = 1 & i24_rD & i24_rA & i24_simm0_8 { *:2 i24_rA+i24_simm0_8 = i24_rD; }
-		:bn.lwz i24_rD,i24_simm0_8_masked(i24_rA), is i24_uimm0_2 = 2 & i24_rD & i24_rA & i24_simm2_6 [ i24_simm0_8_masked = i24_simm2_6 << 2; ] { i24_rD = *:4 i24_rA+i24_simm0_8_masked; } # TODO
-		:bn.sh_2 i24_simm0_8(i24_rA),i24_rD, is i24_uimm0_2 = 3 & i24_rD & i24_rA & i24_simm0_8 { *:2 i24_rA+i24_simm0_8 = i24_rD; }
+		:bn.sw i24_simm0_8(i24_rA),i24_rD, is i24_uimm0_2 = 0 & i24_rD & i24_rA & i24_simm0_8 { *:4 (i24_rA+i24_simm0_8) = i24_rD; }
+		:bn.sh_1 i24_simm0_8(i24_rA),i24_rD, is i24_uimm0_2 = 1 & i24_rD & i24_rA & i24_simm0_8 { *:2 (i24_rA+i24_simm0_8) = i24_rD; }
+		:bn.lwz i24_rD,i24_simm0_8_masked(i24_rA), is i24_uimm0_2 = 2 & i24_rD & i24_rA & i24_simm2_6 [ i24_simm0_8_masked = i24_simm2_6 << 2; ] { i24_rD = *:4 (i24_rA+i24_simm0_8_masked); } # TODO
+		:bn.sh_2 i24_simm0_8(i24_rA),i24_rD, is i24_uimm0_2 = 3 & i24_rD & i24_rA & i24_simm0_8 { *:2 (i24_rA+i24_simm0_8) = i24_rD; }
 	}
 	
 	#:bn.op03 i24_rD, i24_rA, i24_simm0_8 is i24_opcode = 0x03 & i24_rD & i24_rA & i24_simm0_8 { }
 
-	:bn.lbz i24_rD,i24_simm0_8(i24_rA) is i24_opcode = 0x04 & i24_rD & i24_rA & i24_simm0_8 { i24_rD = zext(*:1 i24_rA+i24_simm0_8); }
+	:bn.lbz i24_rD,i24_simm0_8(i24_rA) is i24_opcode = 0x04 & i24_rD & i24_rA & i24_simm0_8 { i24_rD = zext(*:1 (i24_rA+i24_simm0_8)); }
 
 	:bn.op05 i24_rD, i24_rA, i24_simm0_8 is i24_opcode = 0x05 & i24_rD & i24_rA & i24_simm0_8 { }
 	:bn.op06 i24_rD, i24_rA, i24_simm0_8 is i24_opcode = 0x06 & i24_rD & i24_rA & i24_simm0_8 { }
@@ -449,20 +451,22 @@ with : i32_decoder = 5 | i32_decoder = 6 | i32_decoder = 7 {
     }
     with : i32_opcode = 0x3B {
     	:bg.sw_0 i32_simm2_14_shifted2(i32_rA),i32_rD, is i32_uimm0_2 = 0 & i32_rD & i32_rA & i32_simm2_14 [ i32_simm2_14_shifted2 = i32_simm2_14 << 2; ] { 
-    		*:4 i32_rA+i32_simm2_14_shifted2 = i32_rD;
+    		*:4 (i32_rA+i32_simm2_14_shifted2) = i32_rD;
     	}
     	:bg.sw_1 i32_simm2_14_shifted2(i32_rA),i32_rD, is i32_uimm0_2 = 1 & i32_rD & i32_rA & i32_simm2_14 [ i32_simm2_14_shifted2 = i32_simm2_14 << 2; ] { 
-    		*:4 i32_rA+i32_simm2_14_shifted2 = i32_rD;
+    		*:4 (i32_rA+i32_simm2_14_shifted2) = i32_rD;
     	}
     	:bg.lwz i32_rD,i32_simm2_14_shifted2(i32_rA), is i32_uimm0_2 = 2 & i32_rD & i32_rA & i32_simm2_14 [ i32_simm2_14_shifted2 = i32_simm2_14 << 2; ] { 
-    		i32_rD = *:4 i32_rA+i32_simm2_14_shifted2;
+    		i32_rD = *:4 (i32_rA+i32_simm2_14_shifted2);
     	}
     	:bg.sh i32_simm2_14_shifted1(i32_rA),i32_rD, is i32_uimm0_2 = 3 & i32_rD & i32_rA & i32_simm2_14 [ i32_simm2_14_shifted1 = i32_simm2_14 << 1; ] { 
-    		*:2 i32_rA+i32_simm2_14_shifted1 = i32_rD;
+    		*:2 (i32_rA+i32_simm2_14_shifted1) = i32_rD;
     	}
     }
 
-    :bg.lbz_maybe i32_rD, i32_simm0_16 is i32_opcode = 0x3C & i32_rD & i32_simm0_16 { }
+    :bg.lbz i32_rD, i32_simm0_16(i32_rA) is i32_opcode = 0x3C & i32_rD & i32_simm0_16 & i32_rA { 
+    	i32_rD = zext(*:1 (i32_rA+i32_simm0_16));
+    }
     with : i32_opcode = 0x3D {
     	:bg.opcode_3D_0 i32_rA, i32_uimm6_10 is i32_uimm21_5 = 0x0 & i32_rA & i32_uimm6_10 {  }
     	:bg.opcode_3D_1 i32_rA, i32_uimm6_10 is i32_uimm21_5 = 0x1 & i32_rA & i32_uimm6_10 {  }
