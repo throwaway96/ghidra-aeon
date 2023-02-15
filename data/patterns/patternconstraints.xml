@@ -1,5 +1,5 @@
 <patternconstraints>
-  <language id="aeon:BE:32:*">
+  <language id="aeon:LE:32:*">
     <patternfile>aeon_BE_patterns.xml</patternfile>
   </language>
 </patternconstraints>

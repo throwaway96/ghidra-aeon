@@ -3,6 +3,7 @@
 <language_definitions>
   <language processor="AEON"
             endian="little"
+            instructionEndian="big"
             size="32"
             variant="default"
             version="1.0"
