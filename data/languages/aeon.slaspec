@@ -78,7 +78,9 @@ define token instr24(24)
 	i24_uimm10_3 = (10, 12)
 	i24_simm10_3 = (10, 12) signed
 	i24_uimm2_16 = (2, 17)
+	i24_simm2_16 = (2, 17) signed
 
+	i24_bit0 = (0, 0)
 	i24_uimm0_2 = (0, 1)
 	i24_uimm0_3 = (0, 2)
 	i24_uimm0_4 = (0, 3)
@@ -107,6 +109,8 @@ define token instr24(24)
 	i24_simm3_5 = (3, 7) signed
 	i24_simm5_8 = (5, 12) signed
 
+	i24_simm6_7 = (6, 12) signed
+
 	i24_Ru5 = (5, 9)
 ;
 
@@ -122,12 +126,14 @@ define token instr32(32)
 	i32_bit0 = (0, 0)
 	i32_uimm0_2 = (0, 1)
 	i32_uimm0_3 = (0, 2)
+	i32_uimm1_3 = (1, 3)
 
 	i32_uimm0_4 = (0, 3)
 	i32_uimm0_16 = (0, 15)
 	i32_uimm4_12 = (4, 15)
 	i32_uimm4_16 = (4, 19)
 	i32_uimm5_16 = (5, 20)
+	i32_simm5_16 = (5, 20) signed
 	i32_uimm5_11 = (5, 15)
 	i32_uimm6_10 = (6, 15)
 
