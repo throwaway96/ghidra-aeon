@@ -164,6 +164,8 @@ with : i16_decoder = 4 {
 
 with : i24_decoder = 0 | i24_decoder = 1 | i24_decoder = 2 | i24_decoder = 3 {
 
+	:bn.nop is i24_opcode = 0x00 & i24_uimm0_2 = 0 & i24_rA = 0 & i24_rD = 0  & i24_simm0_8 = 0 { }
+
 	:bn.sw_0 i24_simm0_8(i24_rA),i24_rD, is i24_opcode = 0x00 & i24_uimm0_2 = 0 & i24_rD & i24_rA & i24_simm0_8 { *:4 (i24_rA+i24_simm0_8) = i24_rD; }
 	:bn.op0_1 i24_rD,i24_rA,i24_simm0_8 is i24_opcode = 0x00 & i24_uimm0_2 = 1 & i24_rD & i24_rA & i24_simm0_8 {}
 	:bn.op0_2 i24_rD,i24_rA,i24_simm0_8 is i24_opcode = 0x00 & i24_uimm0_2 = 2 & i24_rD & i24_rA & i24_simm0_8 {}
@@ -379,7 +381,9 @@ with : i32_decoder = 5 | i32_decoder = 6 | i32_decoder = 7 {
 	:bg.opcode_2B i32_rD is i32_opcode = 0x2B & i32_rD {}
 	:bg.opcode_2C i32_rD is i32_opcode = 0x2C & i32_rD {}
 	:bg.opcode_2D i32_rD is i32_opcode = 0x2D & i32_rD {}
-	:bg.opcode_2E i32_rD is i32_opcode = 0x2E & i32_rD {}
+	:bg.opcode_2E i32_rD is i32_opcode = 0x2E & i32_rD { EPCR0 = inst_start;
+        ESR0 = SR;
+        goto 0xe00; }
 	:bg.opcode_2F i32_rD is i32_opcode = 0x2F & i32_rD {}
 
 	with : i32_opcode = 0x30 {
@@ -513,7 +517,11 @@ with : i32_decoder = 5 | i32_decoder = 6 | i32_decoder = 7 {
     	i32_rD = zext(*:1 (i32_rA+i32_simm0_16));
     }
     with : i32_opcode = 0x3D {
-    	:bg.opcode_3D_0 i32_rA, i32_uimm6_10 is i32_uimm21_5 = 0x0 & i32_rA & i32_uimm6_10 {  }
+    	:bg.flush_invalidate i32_uimm6_10(i32_rA), i32_uimm4_2 is i32_uimm21_5 = 0x0 & i32_uimm0_4 = 0x4 & i32_rA & i32_uimm6_10 & i32_uimm4_2 {  }
+    	:bg.syncwritebuffer is i32_uimm21_5 = 0x0 & i32_uimm0_4 = 0x5 {  }
+    	:bg.flush_line i32_uimm6_10(i32_rA), i32_uimm4_2 is i32_uimm21_5 = 0x0 & i32_uimm0_4 = 0x6 & i32_rA & i32_uimm6_10 & i32_uimm4_2 {  }
+    	:bg.invalidate_line i32_uimm6_10(i32_rA), i32_uimm4_2 is i32_uimm21_5 = 0x0 & i32_uimm0_4 = 0x7 & i32_rA & i32_uimm6_10 & i32_uimm4_2 {  }
+
     	:bg.opcode_3D_1 i32_rA, i32_uimm6_10 is i32_uimm21_5 = 0x1 & i32_rA & i32_uimm6_10 {  }
     	:bg.opcode_3D_2 i32_rA, i32_uimm6_10 is i32_uimm21_5 = 0x2 & i32_rA & i32_uimm6_10 {  }
     	:bg.opcode_3D_3 i32_rA, i32_uimm6_10 is i32_uimm21_5 = 0x3 & i32_rA & i32_uimm6_10 {  }
