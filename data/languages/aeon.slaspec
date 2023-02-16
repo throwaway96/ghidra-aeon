@@ -70,7 +70,7 @@ define token instr24(24)
 	i24_rA = (8, 12)
 	i24_rD = (13, 17)
 	i24_iK13 = (0, 12)
-	i24_iK18 = (0, 17)
+	i24_iK18 = (0, 17) signed
 
 	i24_uimm2_6 = (2, 7)
 	i24_uimm2_8 = (2, 9)

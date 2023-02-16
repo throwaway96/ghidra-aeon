@@ -162,6 +162,8 @@ with : i16_decoder = 4 {
 #0000200A E4 00 01 7E bg.jal 000020C9
 #20 E0 38 bn.beqi? r7,0x0,001BC218
 
+#00235dca
+
 with : i24_decoder = 0 | i24_decoder = 1 | i24_decoder = 2 | i24_decoder = 3 {
 
 	:bn.nop is i24_opcode = 0x00 & i24_uimm0_2 = 0 & i24_rA = 0 & i24_rD = 0  & i24_simm0_8 = 0 { }
