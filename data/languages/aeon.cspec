@@ -3,9 +3,9 @@
 <compiler_spec>
   <data_organization>
     <absolute_max_alignment value="0" />
-    <machine_alignment value="4" />
+    <machine_alignment value="1" />
     <default_alignment value="1" />
-    <default_pointer_alignment value="4" />
+    <default_pointer_alignment value="1" />
     <pointer_size value="4" />
     <char_type signed="false" />
     <char_size value="1" />
@@ -27,7 +27,7 @@
 
   <stackpointer register="r1" space="ram" growth="negative" />
 
-  <funcptr align="4" />
+  <funcptr align="1" />
 
   <global>
     <range space="ram" />
