@@ -178,9 +178,9 @@ with : i24_decoder = 0 | i24_decoder = 1 | i24_decoder = 2 | i24_decoder = 3 {
 
 	with : i24_opcode = 0x03 {
 		:bn.sw i24_simm0_8(i24_rA),i24_rD, is i24_uimm0_2 = 0 & i24_rD & i24_rA & i24_simm0_8 { *:4 (i24_rA+i24_simm0_8) = i24_rD; }
-		:bn.sh_1 i24_simm0_8(i24_rA),i24_rD, is i24_uimm0_2 = 1 & i24_rD & i24_rA & i24_simm0_8 { *:2 (i24_rA+i24_simm0_8) = i24_rD; }
+		:bn.sh_1 i24_simm0_8(i24_rA),i24_rD, is i24_uimm0_2 = 1 & i24_rD & i24_rA & i24_simm0_8 { *:2 (i24_rA+i24_simm0_8) = i24_rD[16,16]; }
 		:bn.lwz i24_rD,i24_simm0_8_masked(i24_rA), is i24_uimm0_2 = 2 & i24_rD & i24_rA & i24_simm2_6 [ i24_simm0_8_masked = i24_simm2_6 << 2; ] { i24_rD = *:4 (i24_rA+i24_simm0_8_masked); } # TODO
-		:bn.sh_2 i24_simm0_8(i24_rA),i24_rD, is i24_uimm0_2 = 3 & i24_rD & i24_rA & i24_simm0_8 { *:2 (i24_rA+i24_simm0_8) = i24_rD; }
+		:bn.sh_2 i24_simm0_8(i24_rA),i24_rD, is i24_uimm0_2 = 3 & i24_rD & i24_rA & i24_simm0_8 { *:2 (i24_rA+i24_simm0_8) = i24_rD[16,16]; }
 	}
 	
 	#:bn.op03 i24_rD, i24_rA, i24_simm0_8 is i24_opcode = 0x03 & i24_rD & i24_rA & i24_simm0_8 { }
@@ -444,10 +444,10 @@ with : i32_decoder = 5 | i32_decoder = 6 | i32_decoder = 7 {
 			if (i32_rD == i32_uimm16_5) goto i32_rel_simm3_13; # TODO
 		}
 		:bg.bgti i32_rD,i32_uimm16_5,i32_rel_simm3_13 is i32_uimm0_3 = 5 & i32_rD & i32_uimm16_5 & i32_rel_simm3_13 {
-			if (i32_rD > i32_uimm16_5) goto i32_rel_simm3_13;
+			if (i32_rD s> i32_uimm16_5) goto i32_rel_simm3_13;
 		}
-		:bg.blti i32_rD,i32_uimm16_5,i32_rel_simm3_13 is i32_uimm0_3 = 6 & i32_rD & i32_uimm16_5 & i32_rel_simm3_13 {
-			if (i32_rD < i32_uimm16_5) goto i32_rel_simm3_13;
+		:bg.bgtsi i32_rD,i32_uimm16_5,i32_rel_simm3_13 is i32_uimm0_3 = 6 & i32_rD & i32_uimm16_5 & i32_rel_simm3_13 {
+			if (i32_rD s> i32_uimm16_5) goto i32_rel_simm3_13;
 		}
 		:bg.b111i i32_rD,i32_uimm16_5,i32_rel_simm3_13 is i32_uimm0_3 = 7 & i32_rD & i32_uimm16_5 & i32_rel_simm3_13 {
 			goto i32_rel_simm3_13;
@@ -511,7 +511,7 @@ with : i32_decoder = 5 | i32_decoder = 6 | i32_decoder = 7 {
     		i32_rD = *:4 (i32_rA+i32_simm2_14_shifted2);
     	}
     	:bg.sh i32_simm2_14_shifted1(i32_rA),i32_rD, is i32_uimm0_2 = 3 & i32_rD & i32_rA & i32_simm2_14 [ i32_simm2_14_shifted1 = i32_simm2_14 << 1; ] { 
-    		*:2 (i32_rA+i32_simm2_14_shifted1) = i32_rD;
+    		*:2 (i32_rA+i32_simm2_14_shifted1) = i32_rD[16,16];
     	}
     }
 
