@@ -201,8 +201,8 @@ with : i24_decoder = 0 | i24_decoder = 1 | i24_decoder = 2 | i24_decoder = 3 {
 	#:bn.op03 i24_rD, i24_rA, i24_simm0_8 is i24_opcode = 0x03 & i24_rD & i24_rA & i24_simm0_8 { }
 
 	:bn.lbz i24_rD,i24_mB is i24_opcode = 0x04 & i24_rD & i24_mB { i24_rD[0,24] = 0; i24_rD[24,8] = *:1 i24_mB; }
+	:bn.lbs i24_rD,i24_mB is i24_opcode = 0x05 & i24_rD & i24_mB { i24_rD = sext(*:1 i24_mB); }
 
-	:bn.op05 i24_rD, i24_rA, i24_simm0_8 is i24_opcode = 0x05 & i24_rD & i24_rA & i24_simm0_8 { }
 	:bn.sbz i24_mB,i24_rD is i24_opcode = 0x06 & i24_rD & i24_mB { *:1 i24_mB = i24_rD[24,8]; }
 
 	# OP_R2_BN_ADDI_PFX 0x07
@@ -211,9 +211,10 @@ with : i24_decoder = 0 | i24_decoder = 1 | i24_decoder = 2 | i24_decoder = 3 {
 	#:bn.op08 i24_rD, i24_rA, i24_simm0_8 is i24_opcode = 0x08 & i24_rD & i24_rA & i24_simm0_8 { }
 	#:bn.op09 i24_rD, i24_rA, i24_simm0_8 is i24_opcode = 0x09 & i24_rD & i24_rA & i24_simm0_8 { }
 
+	# Verified on hw
 	with : i24_opcode = 0x08 {
 		:bn.beqi i24_rD,i24_uimm10_3,i24_rel_simm2_8 is i24_uimm0_2 = 0 & i24_rD & i24_uimm10_3 & i24_rel_simm2_8 { 
-			if (i24_rD == i24_uimm10_3) goto i24_rel_simm2_8; 
+			if (i24_rD == i24_uimm10_3) goto i24_rel_simm2_8;
 		}
 		:bn.bf i24_rel_simm2_16 is i24_uimm0_2 = 1 & i24_rel_simm2_16 {
 			local flag = F;
@@ -228,6 +229,7 @@ with : i24_decoder = 0 | i24_decoder = 1 | i24_decoder = 2 | i24_decoder = 3 {
 		}
 	}
 
+	# Verified on hw
 	with : i24_opcode = 0x09 {
 		:bn.blesi i24_rD,i24_simm10_3,i24_rel_simm2_8 is i24_uimm0_2 = 0 & i24_rD & i24_simm10_3 & i24_rel_simm2_8 {
 			if (i24_rD s<= i24_simm10_3) goto i24_rel_simm2_8;
@@ -235,8 +237,8 @@ with : i24_decoder = 0 | i24_decoder = 1 | i24_decoder = 2 | i24_decoder = 3 {
 		:bn.bleui i24_rD,i24_uimm10_3,i24_rel_simm2_8 is i24_uimm0_2 = 1 & i24_rD & i24_uimm10_3 & i24_rel_simm2_8 {
 			if (i24_rD <= i24_uimm10_3) goto i24_rel_simm2_8;
 		}
-		:bn.blesi_2 i24_rD,i24_simm10_3,i24_rel_simm2_8 is i24_uimm0_2 = 2 & i24_rD & i24_simm10_3 & i24_rel_simm2_8 {
-			if (i24_rD s<= i24_simm10_3) goto i24_rel_simm2_8;
+		:bn.bgtsi i24_rD,i24_simm10_3,i24_rel_simm2_8 is i24_uimm0_2 = 2 & i24_rD & i24_simm10_3 & i24_rel_simm2_8 {
+			if (i24_rD s> i24_simm10_3) goto i24_rel_simm2_8;
 		}
 		:bn.bgtui i24_rD,i24_uimm10_3,i24_rel_simm2_8 is i24_uimm0_2 = 3 & i24_rD & i24_uimm10_3 & i24_rel_simm2_8 {
 			if (i24_rD > i24_uimm10_3) goto i24_rel_simm2_8;
@@ -255,26 +257,31 @@ with : i24_decoder = 0 | i24_decoder = 1 | i24_decoder = 2 | i24_decoder = 3 {
 
 	:bn.op0E i24_rD, i24_rA, i24_simm0_8 is i24_opcode = 0x0E & i24_rD & i24_rA & i24_simm0_8 { }
 	:bn.op0F i24_rD, i24_rA, i24_simm0_8 is i24_opcode = 0x0F & i24_rD & i24_rA & i24_simm0_8 { }
+
+	# verified on hw except subb and addc
 	with : i24_opcode = 0x10 {
-		:bn.divs i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 0 & i24_rD & i24_rA & i24_rB { i24_rD = i24_rA s/ i24_rB; } # TODO
+		:bn.divs i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 0 & i24_rD & i24_rA & i24_rB { i24_rD = i24_rA s/ i24_rB; }
 		:bn.divu i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 1 & i24_rD & i24_rA & i24_rB { i24_rD = i24_rA / i24_rB; }
-		:bn.mulu i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 2 & i24_rD & i24_rA & i24_rB { i24_rD = i24_rA * i24_rB; } # TODO
-		:bn.mul  i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 3 & i24_rD & i24_rA & i24_rB { i24_rD = i24_rA * i24_rB; }
+		:bn.mulu i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 2 & i24_rD & i24_rA & i24_rB { i24_rD = i24_rA * i24_rB; }
+		:bn.muls i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 3 & i24_rD & i24_rA & i24_rB { i24_rD = i24_rA * i24_rB; }
 		:bn.add  i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 4 & i24_rD & i24_rA & i24_rB { i24_rD = i24_rA + i24_rB; }
 		:bn.sub  i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 5 & i24_rD & i24_rA & i24_rB { i24_rD = i24_rA - i24_rB; }
 		:bn.subb i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 6 & i24_rD & i24_rA & i24_rB { i24_rD = i24_rA - i24_rB; } # TODO
 		:bn.addc i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 7 & i24_rD & i24_rA & i24_rB { i24_rD = i24_rA + i24_rB; } # TODO
 	}
+
+	# verified on hw
 	with : i24_opcode = 0x11 {
-		:bn.op11_0 i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 0 & i24_rD & i24_rA & i24_rB {  }
-		:bn.op11_1 i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 1 & i24_rD & i24_rA & i24_rB {  }
-		:bn.op11_2 i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 2 & i24_rD & i24_rA & i24_rB {  }
-		:bn.op11_3 i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 3 & i24_rD & i24_rA & i24_rB {  }
+		:bn.op11_0 i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 0 & i24_rD & i24_rA & i24_rB {  } # 0x1e ? 0x1 = 0x3, 
+		:bn.op11_1 i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 1 & i24_rD & i24_rA & i24_rB {  } # hangs on hw?
+		:bn.op11_2 i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 2 & i24_rD & i24_rA & i24_rB {  } # hangs on hw?
+		:bn.op11_3 i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 3 & i24_rD & i24_rA & i24_rB {  } # hangs on hw?
 		:bn.and  i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 4 & i24_rD & i24_rA & i24_rB { i24_rD = i24_rA & i24_rB; }
 		:bn.or   i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 5 & i24_rD & i24_rA & i24_rB { i24_rD = i24_rA | i24_rB; }
 		:bn.xor  i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 6 & i24_rD & i24_rA & i24_rB { i24_rD = i24_rA ^ i24_rB; }
 		:bn.nand i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 7 & i24_rD & i24_rA & i24_rB { i24_rD = ~(i24_rA & i24_rB); }
 	}
+
 	with : i24_opcode = 0x12 {
 		:bn.cmov_0 i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 0 & i24_rD & i24_rA & i24_rB {
 			if (F) goto <choose_rA>;
@@ -335,6 +342,7 @@ with : i24_decoder = 0 | i24_decoder = 1 | i24_decoder = 2 | i24_decoder = 3 {
 				local bit = 0;
 		        if (i24_rA == 0) goto <done>;
 		        <loop>
+		        if (bit >= 32) goto <done>;
 		        local zero = (i24_rA & (1 << bit)) == 0;
 		        bit = bit + 1;
 		        if (zero) goto <loop>;
@@ -354,22 +362,30 @@ with : i24_decoder = 0 | i24_decoder = 1 | i24_decoder = 2 | i24_decoder = 3 {
 			:bn.op17_1E i24_rD, i24_rA is i24_uimm1_4 = 0xF & i24_rD & i24_rA {  }
 		}
 
+		# Verified on hw
 		with : i24_bit0 = 0x1 {
 			:bn.sfeqi i24_rD, i24_uimm5_8 is i24_uimm1_4 = 0x0 & i24_rD & i24_uimm5_8 { F = i24_rD == i24_uimm5_8; }
-			:bn.op17_3 i24_rD, i24_rA is i24_uimm1_4 = 0x1 & i24_rD & i24_rA { F = i24_rD == i24_rA; } # TODO
-			:bn.sfeq i24_rD, i24_rA is i24_uimm1_4 = 0x2 & i24_rD & i24_rA { F = i24_rD != i24_rA; }
-			:bn.op17_7 i24_rD, i24_rA is i24_uimm1_4 = 0x3 & i24_rD & i24_rA { F = i24_rD == i24_rA; } # TODO
+			:bn.op17_3 i24_rD, i24_rA is i24_uimm1_4 = 0x1 & i24_rD & i24_rA { F = i24_rD == i24_rA; } # invalid? hangs on hw
+			
+			:bn.sfeq i24_rD, i24_rA is i24_uimm1_4 = 0x2 & i24_rD & i24_rA { F = i24_rD == i24_rA; }
+			:bn.op17_7 i24_rD, i24_rA is i24_uimm1_4 = 0x3 & i24_rD & i24_rA { F = i24_rD == i24_rA; } # invalid?
+			
 			:bn.sfnei i24_rD, i24_uimm5_8 is i24_uimm1_4 = 0x4 & i24_rD & i24_uimm5_8 { F = i24_rD != i24_uimm5_8; }
-			:bn.op17_B i24_rD, i24_rA is i24_uimm1_4 = 0x5 & i24_rD & i24_rA { F = i24_rD == i24_rA; } # TODO
+			:bn.op17_B i24_rD, i24_rA is i24_uimm1_4 = 0x5 & i24_rD & i24_rA { F = i24_rD != i24_rA; } # invalid?
+			
 			:bn.sfne i24_rD, i24_rA is i24_uimm1_4 = 0x6 & i24_rD & i24_rA { F = i24_rD != i24_rA; } # TODO
-			:bn.op17_F i24_rD, i24_rA is i24_uimm1_4 = 0x7 & i24_rD & i24_rA { F = i24_rD == i24_rA; } # TODO
-			:bn.op17_11 i24_rD, i24_rA is i24_uimm1_4 = 0x8 & i24_rD & i24_rA { F = i24_rD == i24_rA; } # TODO
-			:bn.sfgeui i24_rD, i24_uimm5_8 is i24_uimm1_4 = 0x9 & i24_rD & i24_uimm5_8 { F = i24_rD >= i24_uimm5_8; } # TODO
-			:bn.op17_15 i24_rD, i24_rA is i24_uimm1_4 = 0xA & i24_rD & i24_rA { F = i24_rD == i24_rA; } # TODO
-			:bn.sfgeu i24_rD, i24_rA is i24_uimm1_4 = 0xB & i24_rD & i24_rA { F = i24_rD >= i24_rA; } # TODO
-			:bn.op17_19 i24_rD, i24_rA is i24_uimm1_4 = 0xC & i24_rD & i24_rA { F = i24_rD == i24_rA; } # TODO
-			:bn.sfgtui i24_rD, i24_uimm5_8 is i24_uimm1_4 = 0xD & i24_rD & i24_uimm5_8 { F = i24_rD > i24_uimm5_8; } # TODO
-			:bn.op17_1D i24_rD, i24_rA is i24_uimm1_4 = 0xE & i24_rD & i24_rA { F = i24_rD == i24_rA; } # TODO
+			:bn.op17_F i24_rD, i24_rA is i24_uimm1_4 = 0x7 & i24_rD & i24_rA { F = i24_rD != i24_rA; } # invalid?
+			
+			:bn.sflesi i24_rD, i24_simm5_8 is i24_uimm1_4 = 0x8 & i24_rD & i24_simm5_8 { F = i24_rD s<= i24_simm5_8; }
+			:bn.sfleui i24_rD, i24_uimm5_8 is i24_uimm1_4 = 0x9 & i24_rD & i24_uimm5_8 { F = i24_rD <= i24_uimm5_8; }
+			
+			:bn.sfles i24_rD, i24_rA is i24_uimm1_4 = 0xA & i24_rD & i24_rA { F = i24_rD s<= i24_rA; }
+			:bn.sfleu i24_rD, i24_rA is i24_uimm1_4 = 0xB & i24_rD & i24_rA { F = i24_rD <= i24_rA; }
+			
+			:bn.sfgtsi i24_rD, i24_simm5_8 is i24_uimm1_4 = 0xC & i24_rD & i24_simm5_8 { F = i24_rD s> i24_simm5_8; }
+			:bn.sfgtui i24_rD, i24_uimm5_8 is i24_uimm1_4 = 0xD & i24_rD & i24_uimm5_8 { F = i24_rD > i24_uimm5_8; }
+			
+			:bn.sfgts i24_rD, i24_rA is i24_uimm1_4 = 0xE & i24_rD & i24_rA { F = i24_rD s> i24_rA; } # TODO
 			:bn.sfgtu i24_rD, i24_rA is i24_uimm1_4 = 0xF & i24_rD & i24_rA { F = i24_rD > i24_rA; }
 		}
 	}
@@ -404,15 +420,22 @@ with : i32_decoder = 5 | i32_decoder = 6 | i32_decoder = 7 {
 	:bg.opcode_2F i32_rD is i32_opcode = 0x2F & i32_rD {}
 
 	with : i32_opcode = 0x30 {
+		# verified on hw
 		with : i32_bit0 = 0x0 {
-			:bg.sfeqi i32_rD, i32_uimm5_16 is i32_uimm1_3 = 0x0 & i32_rD & i32_uimm5_16 { F = i32_rD == i32_uimm5_16; } # guessed from MApp_MassStorage_DriveConnect
+			:bg.sfeqi i32_rD, i32_uimm5_16 is i32_uimm1_3 = 0x0 & i32_rD & i32_uimm5_16 { F = i32_rD == i32_uimm5_16; }
+			
+			# verified on hw, hangs?
 			:bg.opcode_30_2 i32_rD, i32_uimm5_16 is i32_uimm1_3 = 0x1 & i32_rD & i32_uimm5_16 { F = i32_rD == i32_uimm5_16; }
+			
 			:bg.sfnei i32_rD, i32_uimm5_16 is i32_uimm1_3 = 0x2 & i32_rD & i32_uimm5_16 { F = i32_rD != i32_uimm5_16; }
+
+			# verified on hw, hangs
 			:bg.opcode_30_6 i32_rD, i32_uimm5_16 is i32_uimm1_3 = 0x3 & i32_rD & i32_uimm5_16 { F = i32_rD == i32_uimm5_16; }
-			:bg.sflesi i32_rD, i32_simm5_16 is i32_uimm1_3 = 0x4 & i32_rD & i32_simm5_16 { F = i32_rD <= i32_simm5_16; }
+
+			:bg.sflesi i32_rD, i32_simm5_16 is i32_uimm1_3 = 0x4 & i32_rD & i32_simm5_16 { F = i32_rD s<= i32_simm5_16; }
 			:bg.sfleui i32_rD, i32_uimm5_16 is i32_uimm1_3 = 0x5 & i32_rD & i32_uimm5_16 { F = i32_rD <= i32_uimm5_16; }
-			:bg.sfgesi i32_rD, i32_simm5_16 is i32_uimm1_3 = 0x6 & i32_rD & i32_simm5_16 { F = i32_rD >= i32_simm5_16; }
-			:bg.sfgtui i32_rD, i32_uimm5_16 is i32_uimm1_3 = 0x7 & i32_rD & i32_uimm5_16 { F = i32_rD > i32_uimm5_16; }
+			:bg.sfgtsi i32_rD, i32_simm5_16 is i32_uimm1_3 = 0x6 & i32_rD & i32_simm5_16 { F = i32_rD s> i32_simm5_16; }
+			:bg.sfgti i32_rD, i32_uimm5_16 is i32_uimm1_3 = 0x7 & i32_rD & i32_uimm5_16 { F = i32_rD > i32_uimm5_16; }
 		}
 		with : i32_bit0 = 0x1 {
 			:bg.movhi i32_rD, i32_uimm5_16 is i32_uimm1_3 = 0x0 & i32_rD & i32_uimm5_16 { i32_rD = i32_uimm5_16 << 16; }
@@ -442,38 +465,44 @@ with : i32_decoder = 5 | i32_decoder = 6 | i32_decoder = 7 {
 	
 	:bg.muli_maybe i32_rD, i32_rA, i32_simm0_16 is i32_opcode = 0x33 & i32_rD & i32_rA & i32_simm0_16 { i32_rD = i32_rA * i32_simm0_16; }
 
+	# Verified on hw
 	with : i32_opcode = 0x34 {
-		:bg.bles i32_rD,i32_simm16_5,i32_rel_simm3_13 is i32_uimm0_3 = 0 & i32_rD & i32_simm16_5 & i32_rel_simm3_13 {
+		:bg.blesi i32_rD,i32_simm16_5,i32_rel_simm3_13 is i32_uimm0_3 = 0 & i32_rD & i32_simm16_5 & i32_rel_simm3_13 {
 			if (i32_rD s<= i32_simm16_5) goto i32_rel_simm3_13;
 		}
-		:bg.blts i32_rD,i32_simm16_5,i32_rel_simm3_13 is i32_uimm0_3 = 1 & i32_rD & i32_simm16_5 & i32_rel_simm3_13 {
-			if (i32_rD s< i32_simm16_5) goto i32_rel_simm3_13;
+		:bg.bleui i32_rD,i32_uimm16_5,i32_rel_simm3_13 is i32_uimm0_3 = 1 & i32_rD & i32_uimm16_5 & i32_rel_simm3_13 {
+			if (i32_rD <= i32_uimm16_5) goto i32_rel_simm3_13;
 		}
 		:bg.beqi i32_rD,i32_uimm16_5,i32_rel_simm3_13 is i32_uimm0_3 = 2 & i32_rD & i32_uimm16_5 & i32_rel_simm3_13 {
 			if (i32_rD == i32_uimm16_5) goto i32_rel_simm3_13;
 		}
+		# invalid? hangs on hw. bg.bequi? 
 		:bg.011i i32_rD,i32_uimm16_5,i32_rel_simm3_13 is i32_uimm0_3 = 3 & i32_rD & i32_uimm16_5 & i32_rel_simm3_13 {
 			goto i32_rel_simm3_13;
 		}
-		:bg.b__bitseti i32_rD,i32_uimm16_5,i32_rel_simm3_13 is i32_uimm0_3 = 4 & i32_rD & i32_uimm16_5 & i32_rel_simm3_13 {
-			if (i32_rD == i32_uimm16_5) goto i32_rel_simm3_13; # TODO
+
+		:bg.bgtsi i32_rD,i32_simm16_5,i32_rel_simm3_13 is i32_uimm0_3 = 4 & i32_rD & i32_simm16_5 & i32_rel_simm3_13 {
+			if (i32_rD s> i32_simm16_5) goto i32_rel_simm3_13; # TODO
 		}
-		:bg.bgei i32_rD,i32_uimm16_5,i32_rel_simm3_13 is i32_uimm0_3 = 5 & i32_rD & i32_uimm16_5 & i32_rel_simm3_13 {
-			if (i32_rD s>= i32_uimm16_5) goto i32_rel_simm3_13;
+		:bg.bgtui i32_rD,i32_uimm16_5,i32_rel_simm3_13 is i32_uimm0_3 = 5 & i32_rD & i32_uimm16_5 & i32_rel_simm3_13 {
+			if (i32_rD > i32_uimm16_5) goto i32_rel_simm3_13;
 		}
-		:bg.bgesi i32_rD,i32_uimm16_5,i32_rel_simm3_13 is i32_uimm0_3 = 6 & i32_rD & i32_uimm16_5 & i32_rel_simm3_13 {
-			if (i32_rD s>= i32_uimm16_5) goto i32_rel_simm3_13;
+		:bg.bnei i32_rD,i32_uimm16_5,i32_rel_simm3_13 is i32_uimm0_3 = 6 & i32_rD & i32_uimm16_5 & i32_rel_simm3_13 {
+			if (i32_rD != i32_uimm16_5) goto i32_rel_simm3_13;
 		}
+		# Invalid? hangs on hw. bg.bneui?
 		:bg.b111i i32_rD,i32_uimm16_5,i32_rel_simm3_13 is i32_uimm0_3 = 7 & i32_rD & i32_uimm16_5 & i32_rel_simm3_13 {
 			goto i32_rel_simm3_13;
 		}
 	}
+
+	# Verified on hw
 	with : i32_opcode = 0x35 {
-		:bg.bleu i32_rD,i32_rA,i32_rel_simm3_13 is i32_uimm0_3 = 0 & i32_rD & i32_rA & i32_rel_simm3_13 {
-			if (i32_rD <= i32_rA) goto i32_rel_simm3_13;
+		:bg.bles i32_rD,i32_rA,i32_rel_simm3_13 is i32_uimm0_3 = 0 & i32_rD & i32_rA & i32_rel_simm3_13 {
+			if (i32_rD s<= i32_rA) goto i32_rel_simm3_13;
 		}
-		:bg.bges i32_rD,i32_rA,i32_rel_simm3_13 is i32_uimm0_3 = 1 & i32_rD & i32_rA & i32_rel_simm3_13 {
-			if (i32_rD s>= i32_rA) goto i32_rel_simm3_13;
+		:bg.ble i32_rD,i32_rA,i32_rel_simm3_13 is i32_uimm0_3 = 1 & i32_rD & i32_rA & i32_rel_simm3_13 {
+			if (i32_rD <= i32_rA) goto i32_rel_simm3_13;
 		}
 		:bg.beq i32_rD,i32_rA,i32_rel_simm3_13 is i32_uimm0_3 = 2 & i32_rD & i32_rA & i32_rel_simm3_13 {
 			if (i32_rD == i32_rA) goto i32_rel_simm3_13;
@@ -485,8 +514,8 @@ with : i32_decoder = 5 | i32_decoder = 6 | i32_decoder = 7 {
 		:bg.bgts i32_rD,i32_rA,i32_rel_simm3_13 is i32_uimm0_3 = 4 & i32_rD & i32_rA & i32_rel_simm3_13 {
 			if (i32_rD s> i32_rA) goto i32_rel_simm3_13;
 		}
-		:bg.bgeu i32_rD,i32_rA,i32_rel_simm3_13 is i32_uimm0_3 = 5 & i32_rD & i32_rA & i32_rel_simm3_13 {
-			if (i32_rD >= i32_rA) goto i32_rel_simm3_13;
+		:bg.bgt i32_rD,i32_rA,i32_rel_simm3_13 is i32_uimm0_3 = 5 & i32_rD & i32_rA & i32_rel_simm3_13 {
+			if (i32_rD > i32_rA) goto i32_rel_simm3_13;
 		}
 		:bg.bne i32_rD,i32_rA,i32_rel_simm3_13 is i32_uimm0_3 = 6 & i32_rD & i32_rA & i32_rel_simm3_13 {
 			if (i32_rD != i32_rA) goto i32_rel_simm3_13;
