@@ -110,6 +110,11 @@ i32_mB: i32_simm0_16(i32_rA) is i32_simm0_16 & i32_rA {
     export ea;
 }
 
+i32_mB_2: offs(i32_rA) is i32_simm0_16 & i32_rA [ offs = i32_simm0_16 << 1; ] {
+    local ea = i32_rA + offs;
+    export ea;
+}
+
 #
 # Custom operations
 #
@@ -546,8 +551,8 @@ with : i32_decoder = 5 | i32_decoder = 6 | i32_decoder = 7 {
 		#:bg.opcode_39 i32_rD is i32_rD {}
     }
     with : i32_opcode = 0x3A {
-        :bg.lhs i32_rD, i32_rel_simm1_25 is i32_bit0 = 0 & i32_rel_simm1_25 & i32_rD { i32_rD[0,16] = 0; i32_rD[16,16] =  sext(*:2 i32_rel_simm1_25); }
-		:bg.lhz i32_rD, i32_rel_simm1_25 is i32_bit0 = 1 & i32_rel_simm1_25 & i32_rD { i32_rD[0,16] = 0; i32_rD[16,16] = zext(*:2 i32_rel_simm1_25); }
+        :bg.lhs i32_rD, i32_simm1_15_shifted1(i32_rA) is i32_bit0 = 0 & i32_simm1_15 & i32_rA & i32_rD [ i32_simm1_15_shifted1 = i32_simm1_15 << 1; ] { i32_rD[0,16] = 0; i32_rD[16,16] =  sext(*:2 (i32_rA+i32_simm1_15_shifted1)); }
+		:bg.lhz i32_rD, i32_simm1_15_shifted1(i32_rA) is i32_bit0 = 1 & i32_simm1_15 & i32_rA & i32_rD [ i32_simm1_15_shifted1 = i32_simm1_15 << 1; ] { i32_rD[0,16] = 0; i32_rD[16,16] = zext(*:2 (i32_rA+i32_simm1_15_shifted1)); }
     }
     with : i32_opcode = 0x3B {
     	:bg.sw_0 i32_simm2_14_shifted2(i32_rA),i32_rD, is i32_uimm0_2 = 0 & i32_rD & i32_rA & i32_simm2_14 [ i32_simm2_14_shifted2 = i32_simm2_14 << 2; ] { 
