@@ -7,7 +7,7 @@
     </tracked_set>
   </context_data>
 
-  <default_symbols>
+  <!--<default_symbols>
     <symbol address="0x100" entry="true" name="or1k_reset" />
     <symbol address="0x200" entry="true" name="or1k_bus_error" />
     <symbol address="0x300" entry="true" name="or1k_data_page_fault" />
@@ -22,5 +22,5 @@
     <symbol address="0xc00" entry="true" name="or1k_system_call" />
     <symbol address="0xd00" entry="true" name="or1k_fp_exception" />
     <symbol address="0xe00" entry="true" name="or1k_trap" />
-  </default_symbols>
+  </default_symbols>-->
 </processor_spec>
