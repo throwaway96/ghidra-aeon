@@ -20,103 +20,53 @@ define register offset=0x100000 size=1 [
 ];
 
 define token instr16(16)
-	is_instr16 = (0, 15)
-	i16_decoder = (13,15)
+	i16_decoder = (13, 15)
 	i16_opcode = (10, 15)
+
+	i16_rA = (0, 4)
+	i16_rD = (5, 9)
 
 	i16_bit0 = (0, 0)
 	i16_bit5 = (5, 5)
 
-	i16_rD = (5, 9)
-	i16_rA = (0, 4)
-
-	i16_uimm0_2 = (0, 1)
-	i16_uimm0_3 = (0, 2)
-	i16_uimm0_4 = (0, 3)
 	i16_uimm0_5 = (0, 4)
-	i16_uimm0_8 = (0, 8)
-	i16_uimm0_10 = (0, 9)
-	i16_simm0_10 = (0, 9) signed
-	i16_uimm0_13 = (0, 13)
-
-	i16_uimm1_4 = (1, 3)
-	i16_uimm3_5 = (3, 5)
-	i16_uimm3_13 = (3, 13)
-	i16_uimm4_2 = (4, 2)
-	i16_uimm4_12 = (4, 11)
-	i16_uimm5_5 = (5, 5)
-	i16_uimm5_8 = (5, 8)
-	i16_uimm5_9 = (5, 9)
-
 	i16_simm0_5 = (0, 4) signed
-	i16_simm0_8 = (0, 7) signed
-	i16_simm0_16 = (0, 15) signed
-	i16_simm0_16_32 = (0, 15) signed
-
-	i16_simm3_5 = (3, 5) signed
-	i16_simm5_8 = (5, 8) signed
-
-	i16_Ru5 = (5, 9)
+	i16_simm0_10 = (0, 9) signed
+	i16_uimm1_4 = (1, 3)
 ;
 
 define token instr24(24)
-	is_instr24 = (0, 23)
-
 	i24_decoder = (21, 23)
 	i24_opcode = (18, 23)
 
-	i24_iK = (0, 7)
-	i24_rB = (3, 7)
 	i24_rA = (8, 12)
+	i24_rB = (3, 7)
 	i24_rD = (13, 17)
+	i24_iK = (0, 7)
 	i24_iK13 = (0, 12)
 	i24_iK18 = (0, 17) signed
 
-	i24_uimm2_6 = (2, 7)
-	i24_uimm2_8 = (2, 9)
-	i24_simm2_8 = (2, 9) signed
-	i24_uimm10_3 = (10, 12)
-	i24_simm10_3 = (10, 12) signed
-	i24_uimm2_16 = (2, 17)
-	i24_simm2_16 = (2, 17) signed
-
 	i24_bit0 = (0, 0)
+
 	i24_uimm0_2 = (0, 1)
 	i24_uimm0_3 = (0, 2)
-	i24_uimm0_4 = (0, 3)
-	i24_uimm0_5 = (0, 4)
-	i24_uimm0_8 = (0, 7)
-	i24_uimm0_10 = (0, 9)
-	i24_uimm0_13 = (0, 12)
-
-	i24_uimm1_4 = (1, 4)
-	i24_uimm3_5 = (3, 7)
-	i24_uimm3_13 = (3, 13)
-	i24_uimm4_2 = (4, 2)
-	i24_uimm4_12 = (4, 12)
-	i24_uimm5_5 = (5, 5)
-	i24_uimm5_8 = (5, 12)
-	i24_uimm5_9 = (5, 9)
-
-	i24_simm2_6 = (2, 7) signed
-
-	i24_simm0_5 = (0, 4) signed
 	i24_simm0_8 = (0, 7) signed
-	i24_simm0_16 = (0, 15) signed
-	i24_simm0_16_32 = (0, 15) signed
-
-	i24_simm8_5 = (8, 12) signed
+	i24_uimm1_4 = (1, 4)
+	i24_simm2_6 = (2, 7) signed
+	i24_uimm2_8 = (2, 9)
+	i24_simm2_8 = (2, 9) signed
+	i24_uimm2_16 = (2, 17)
+	i24_simm2_16 = (2, 17) signed
+	i24_uimm3_5 = (3, 7)
 	i24_simm3_5 = (3, 7) signed
+	i24_uimm5_8 = (5, 12)
 	i24_simm5_8 = (5, 12) signed
-
-	i24_simm6_7 = (6, 12) signed
-
-	i24_Ru5 = (5, 9)
+	i24_simm8_5 = (8, 12) signed
+	i24_uimm10_3 = (10, 12)
+	i24_simm10_3 = (10, 12) signed
 ;
 
 define token instr32(32)
-	is_instr32 = (0, 31)
-
 	i32_decoder = (29,31)
 	i32_opcode = (26,31)
 
@@ -124,77 +74,28 @@ define token instr32(32)
 	i32_rD = (21, 25)
 
 	i32_bit0 = (0, 0)
+
 	i32_uimm0_2 = (0, 1)
 	i32_uimm0_3 = (0, 2)
-	i32_uimm1_3 = (1, 3)
-
-	i32_uimm4_2 = (4, 5)
-
-	i32_bit4 = (4, 4)
-	i32_bit5 = (5, 5)
-
 	i32_uimm0_4 = (0, 3)
-	i32_uimm0_6 = (0, 5)
 	i32_uimm0_16 = (0, 15)
-	i32_uimm4_12 = (4, 15)
-	i32_uimm4_16 = (4, 19)
-	i32_uimm5_16 = (5, 20)
-	i32_simm5_16 = (5, 20) signed
-	i32_uimm5_11 = (5, 15)
-	i32_uimm6_10 = (6, 15)
-
 	i32_simm0_16 = (0, 15) signed
-
+	i32_uimm1_3 = (1, 3)
 	i32_simm1_15 = (1, 15) signed
 	i32_simm1_25 = (1, 25) signed
 	i32_simm2_14 = (2, 15) signed
 	i32_simm3_13 = (3, 15) signed
-	i32_simm16_5 = (16, 20) signed
+	i32_uimm4_2 = (4, 5)
+	i32_uimm4_12 = (4, 15)
+	i32_uimm5_16 = (5, 20)
+	i32_simm5_16 = (5, 20) signed
+	i32_uimm6_10 = (6, 15)
 	i32_uimm16_5 = (16, 20)
-
+	i32_simm16_5 = (16, 20) signed
 	i32_uimm21_5 = (21, 25)
-
-	#rD	= (21, 25)
-	#rA	= (16, 20)
-	#rB	= (11, 15)
-
-	#imm16	= ( 0, 15) signed
-	#imm16a	= (21, 25) signed
-	#imm16b	= ( 0, 10)
-	#imm21	= ( 0, 20) signed
-	#imm26	= ( 0, 25) signed
-
-	#uimm5	= ( 0,  4)
-	#uimm16	= ( 0, 15)
-	#uimm16a	= (21, 25)
-	#uimm16b	= ( 0, 10)
-
-	######
-
-	
-	#Ru13 = (13, 17)
-	#Ru21 = (21, 25)
-
-	#uimm0_16 = (0, 16)
-	#uimm5_16 = (5, 16)
-
-	#uimm8_5 = (8, 5)
-	#uimm10_3 = (10, 3)
-	#uimm10_6 = (10, 6)
-	#uimm14_4 = (14, 4)
-	#uimm16_5 = (16, 5)
-	#uimm18_6 = (18, 6)
-	#uimm26_6 = (26, 6)
-
-	
-	
-	#simm5_16 = (5, 16) signed
-	#simm8_5 = (8, 5) signed
-	#simm10_3 = (10, 3) signed
-	#simm16_5 = (16, 5) signed
 ;
 
-attach variables [ i16_Ru5 i16_rD i16_rA i24_Ru5 i24_rB i24_rD i24_rA i32_rA i32_rD ] [ # Ru13 Ru21
+attach variables [ i16_rD i16_rA i24_rB i24_rD i24_rA i32_rA i32_rD ] [
 	r0  r1  r2  r3  r4  r5  r6  r7  r8  r9  r10 r11 r12 r13 r14 r15
 	r16 r17 r18 r19 r20 r21 r22 r23 r24 r25 r26 r27 r28 r29 r30 r31
 ];

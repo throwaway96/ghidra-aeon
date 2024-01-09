@@ -223,7 +223,7 @@ with : i24_decoder = 0 | i24_decoder = 1 | i24_decoder = 2 | i24_decoder = 3 {
 
 	# Verified on hw
 	with : i24_opcode = 0x08 {
-		:bn.beqi i24_rD,i24_uimm10_3,i24_rel_simm2_8 is i24_uimm0_2 = 0 & i24_rD & i24_simm10_3 & i24_rel_simm2_8 { 
+		:bn.beqi i24_rD,i24_simm10_3,i24_rel_simm2_8 is i24_uimm0_2 = 0 & i24_rD & i24_simm10_3 & i24_rel_simm2_8 {
 			if (i24_rD == i24_simm10_3) goto i24_rel_simm2_8;
 		}
 		:bn.bf i24_rel_simm2_16 is i24_uimm0_2 = 1 & i24_rel_simm2_16 {
@@ -300,12 +300,12 @@ with : i24_decoder = 0 | i24_decoder = 1 | i24_decoder = 2 | i24_decoder = 3 {
 	        <choose_rA>
 	        i24_rD = i24_rA;
 		}
-		:bn.cmov_1 i24_rD, i24_rA, i24_rB is i24_uimm0_3 = 1 & i24_rD & i24_rA & i24_rB {
+		:bn.cmovsi_1 i24_rD, i24_simm8_5, i24_rB is i24_uimm0_3 = 1 & i24_rD & i24_simm8_5 & i24_rB {
 			if (F) goto <choose_rA>;
 	        i24_rD = i24_rB;
 	        goto inst_next;
 	        <choose_rA>
-	        i24_rD = i24_rA;
+	        i24_rD = i24_simm8_5;
 		}
 		:bn.cmovsi_2 i24_rD, i24_rA, i24_simm3_5 is i24_uimm0_3 = 2 & i24_rD & i24_rA & i24_simm3_5 {
 			if (F) goto <choose_rA>;
@@ -483,7 +483,7 @@ with : i32_decoder = 5 | i32_decoder = 6 | i32_decoder = 7 {
 		:bg.bleui i32_rD,i32_uimm16_5,i32_rel_simm3_13 is i32_uimm0_3 = 1 & i32_rD & i32_uimm16_5 & i32_rel_simm3_13 {
 			if (i32_rD <= i32_uimm16_5) goto i32_rel_simm3_13;
 		}
-		:bg.beqi i32_rD,i32_uimm16_5,i32_rel_simm3_13 is i32_uimm0_3 = 2 & i32_rD & i32_simm16_5 & i32_rel_simm3_13 {
+		:bg.beqi i32_rD,i32_simm16_5,i32_rel_simm3_13 is i32_uimm0_3 = 2 & i32_rD & i32_simm16_5 & i32_rel_simm3_13 {
 			if (i32_rD == i32_simm16_5) goto i32_rel_simm3_13;
 		}
 		# invalid? hangs on hw. bg.bequi? 
