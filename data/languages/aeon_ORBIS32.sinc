@@ -44,19 +44,11 @@ macro setmac(var) {
     MACLO = var:4;
 }
 
-i24_rel_uimm2_8: ea is i24_uimm2_8 [ ea = i24_uimm2_8 + inst_start; ] {
-    export *:4 ea;
-}
-
 i24_rel_simm2_8: ea is i24_simm2_8 [ ea = i24_simm2_8 + inst_start; ] {
     export *:4 ea;
 }
 
 i24_rel_iK18: ea is i24_iK18 [ ea = i24_iK18 + inst_start; ] {
-    export *:4 ea;
-}
-
-i24_rel_uimm2_16: ea is i24_uimm2_16 [ ea = i24_uimm2_16 + inst_start; ] {
     export *:4 ea;
 }
 
@@ -86,10 +78,6 @@ i32_spr_2: spr is i32_uimm5_16 [ spr = (i32_uimm5_16 << 0); ] {
     export tmp;
 }
 
-i32_simm1_15_shifted1: ea is i32_simm1_15 [ ea = i32_simm1_15 << 1; ] {
-    export *:4 ea;
-}
-
 i24_mB: i24_simm0_8(i24_rA) is i24_simm0_8 & i24_rA {
     local ea = i24_rA + i24_simm0_8;
     export ea;
@@ -107,11 +95,6 @@ i24_mB_16: i24_simm0_8_masked(i24_rA) is i24_simm0_8 & i24_rA & i24_simm2_6 [ i2
 
 i32_mB: i32_simm0_16(i32_rA) is i32_simm0_16 & i32_rA {
     local ea = i32_rA + i32_simm0_16;
-    export ea;
-}
-
-i32_mB_2: offs(i32_rA) is i32_simm0_16 & i32_rA [ offs = i32_simm0_16 << 1; ] {
-    local ea = i32_rA + offs;
     export ea;
 }
 
