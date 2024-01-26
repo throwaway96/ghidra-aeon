@@ -380,7 +380,7 @@ with : i24_decoder = 0 | i24_decoder = 1 | i24_decoder = 2 | i24_decoder = 3 {
             :bn.sfeq i24_rD, i24_rA is i24_uimm1_4 = 0x2 & i24_rD & i24_rA { F = i24_rD == i24_rA; }
             :bn.op17_7 i24_rD, i24_rA is i24_uimm1_4 = 0x3 & i24_rD & i24_rA { F = i24_rD == i24_rA; } # invalid?
 
-            :bn.sfnei i24_rD, i24_uimm5_8 is i24_uimm1_4 = 0x4 & i24_rD & i24_uimm5_8 { F = i24_rD != i24_uimm5_8; }
+            :bn.sfnei i24_rD, i24_simm5_8 is i24_uimm1_4 = 0x4 & i24_rD & i24_simm5_8 { F = i24_rD != i24_simm5_8; }
             :bn.op17_B i24_rD, i24_rA is i24_uimm1_4 = 0x5 & i24_rD & i24_rA { F = i24_rD != i24_rA; } # invalid?
 
             :bn.sfne i24_rD, i24_rA is i24_uimm1_4 = 0x6 & i24_rD & i24_rA { F = i24_rD != i24_rA; } # TODO
@@ -437,6 +437,7 @@ with : i32_decoder = 5 | i32_decoder = 6 | i32_decoder = 7 {
             # verified on hw, hangs?
             :bg.opcode_30_2 i32_rD, i32_uimm5_16 is i32_uimm1_3 = 0x1 & i32_rD & i32_uimm5_16 { F = i32_rD == i32_uimm5_16; }
 
+            # TODO: check if the immediate is signed (it probably is)
             :bg.sfnei i32_rD, i32_uimm5_16 is i32_uimm1_3 = 0x2 & i32_rD & i32_uimm5_16 { F = i32_rD != i32_uimm5_16; }
 
             # verified on hw, hangs
