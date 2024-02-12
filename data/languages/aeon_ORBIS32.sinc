@@ -101,19 +101,6 @@ i32_mB: i32_simm0_16(i32_rA) is i32_simm0_16 & i32_rA {
 #
 # Custom operations
 #
-define pcodeop csync;
-define pcodeop msync;
-define pcodeop psync;
-define pcodeop macsync;
-
-define pcodeop cust1;
-define pcodeop cust2;
-define pcodeop cust3;
-define pcodeop cust4;
-define pcodeop cust5;
-define pcodeop cust6;
-define pcodeop cust7;
-define pcodeop cust8;
 
 #define OP_R2_BT_ADDI_PFX 0x27
 #define OP_R2_BN_ADDI_PFX 0x07
