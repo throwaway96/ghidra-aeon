@@ -1,1 +1,16 @@
+* eol=lf
+/LICENSE text
+/Module.manifest text
+*.py text
+*.txt text
+*.xml text
+*.cspec text
+*.pspec text
+*.ldefs text
+*.sinc text
+*.slaspec text
+.gitignore text
+.gitattributes text
+
+# SLEIGH compiler outputs mixed line endings
 /data/languages/*.sla -text
