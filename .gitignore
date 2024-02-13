@@ -1,1 +1,4 @@
 .DS_Store
+
+# output from SLEIGH compiler
+/data/languages/*.sla
