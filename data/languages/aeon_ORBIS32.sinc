@@ -167,7 +167,7 @@ with : i24_decoder = 0 | i24_decoder = 1 | i24_decoder = 2 | i24_decoder = 3 {
 
     :bn.nop is i24_opcode = 0x00 & i24_uimm0_2 = 0 & i24_rA = 0 & i24_rD = 0  & i24_simm0_8 = 0 { }
 
-    :bn.sw_0 i24_mB,i24_rD, is i24_opcode = 0x00 & i24_uimm0_2 = 0 & i24_rD & i24_mB { *:4 i24_mB = i24_rD; }
+    :bn.sw_0 i24_mB,i24_rD is i24_opcode = 0x00 & i24_uimm0_2 = 0 & i24_rD & i24_mB { *:4 i24_mB = i24_rD; }
     :bn.op0_1 i24_rD,i24_rA,i24_simm0_8 is i24_opcode = 0x00 & i24_uimm0_2 = 1 & i24_rD & i24_rA & i24_simm0_8 unimpl
     :bn.op0_2 i24_rD,i24_rA,i24_simm0_8 is i24_opcode = 0x00 & i24_uimm0_2 = 2 & i24_rD & i24_rA & i24_simm0_8 unimpl
     :bn.op0_3 i24_rD,i24_rA,i24_simm0_8 is i24_opcode = 0x00 & i24_uimm0_2 = 3 & i24_rD & i24_rA & i24_simm0_8 unimpl

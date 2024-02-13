@@ -3244,7 +3244,6 @@
 <opprint id="1"/>
 <print piece=","/>
 <opprint id="0"/>
-<print piece=","/>
 <construct_tpl>
 <null/><op_tpl code="BUILD"><null/>
 <varnode_tpl><const_tpl type="spaceid" name="const"/><const_tpl type="real" val="0x1"/><const_tpl type="real" val="0x4"/></varnode_tpl>
