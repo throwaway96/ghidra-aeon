@@ -101,6 +101,10 @@ i32_mB: i32_simm0_16(i32_rA) is i32_simm0_16 & i32_rA {
 #
 # Custom operations
 #
+define pcodeop flush_invalidate;
+define pcodeop syncwritebuffer;
+define pcodeop flush_line;
+define pcodeop invalidate_line;
 
 #define OP_R2_BT_ADDI_PFX 0x27
 #define OP_R2_BN_ADDI_PFX 0x07
@@ -545,10 +549,22 @@ with : i32_decoder = 5 | i32_decoder = 6 | i32_decoder = 7 {
         i32_rD[24,8] = *:1 i32_mB;
     }
     with : i32_opcode = 0x3D {
-        :bg.flush_invalidate i32_uimm6_10(i32_rA), i32_uimm4_2 is i32_uimm21_5 = 0x0 & i32_uimm0_4 = 0x4 & i32_rA & i32_uimm6_10 & i32_uimm4_2 {  }
-        :bg.syncwritebuffer is i32_uimm21_5 = 0x0 & i32_uimm0_4 = 0x5 {  }
-        :bg.flush_line i32_uimm6_10(i32_rA), i32_uimm4_2 is i32_uimm21_5 = 0x0 & i32_uimm0_4 = 0x6 & i32_rA & i32_uimm6_10 & i32_uimm4_2 {  }
-        :bg.invalidate_line i32_uimm6_10(i32_rA), i32_uimm4_2 is i32_uimm21_5 = 0x0 & i32_uimm0_4 = 0x7 & i32_rA & i32_uimm6_10 & i32_uimm4_2 {  }
+        # XXX: not sure about the offsets in these. may be shifted; possibly signed.
+        :bg.flush_invalidate i32_uimm6_10(i32_rA), i32_uimm4_2 is i32_uimm21_5 = 0x0 & i32_uimm0_4 = 0x4 & i32_rA & i32_uimm6_10 & i32_uimm4_2 {
+            local ea = i32_rA + i32_uimm6_10;
+            flush_invalidate(ea, i32_uimm4_2:1);
+        }
+        :bg.syncwritebuffer is i32_uimm21_5 = 0x0 & i32_uimm0_4 = 0x5 {
+            syncwritebuffer();
+         }
+        :bg.flush_line i32_uimm6_10(i32_rA), i32_uimm4_2 is i32_uimm21_5 = 0x0 & i32_uimm0_4 = 0x6 & i32_rA & i32_uimm6_10 & i32_uimm4_2 {
+            local ea:4 = i32_rA + i32_uimm6_10;
+            flush_line(ea, i32_uimm4_2:1);
+         }
+        :bg.invalidate_line i32_uimm6_10(i32_rA), i32_uimm4_2 is i32_uimm21_5 = 0x0 & i32_uimm0_4 = 0x7 & i32_rA & i32_uimm6_10 & i32_uimm4_2 {
+            local ea:4 = i32_rA + i32_uimm6_10;
+            invalidate_line(ea, i32_uimm4_2:1);
+        }
 
         :bg.opcode_3D_1 i32_rA, i32_uimm6_10 is i32_uimm21_5 = 0x1 & i32_rA & i32_uimm6_10 unimpl
         :bg.opcode_3D_2 i32_rA, i32_uimm6_10 is i32_uimm21_5 = 0x2 & i32_rA & i32_uimm6_10 unimpl
