@@ -165,7 +165,12 @@ with : i16_decoder = 4 {
 
 with : i24_decoder = 0 | i24_decoder = 1 | i24_decoder = 2 | i24_decoder = 3 {
 
-    :bn.nop is i24_opcode = 0x00 & i24_uimm0_2 = 0 & i24_rA = 0 & i24_rD = 0  & i24_simm0_8 = 0 { }
+    :bn.nop is i24_opcode = 0x00 & i24_uimm0_2 = 0 & i24_rA = 0 & i24_rD = 0 & i24_simm0_8 = 0 {
+        # eliminate NOP warning
+        # see https://github.com/NationalSecurityAgency/ghidra/issues/603
+        local NOP:1 = 0;
+        NOP = NOP;
+    }
 
     :bn.sw_0 i24_mB,i24_rD is i24_opcode = 0x00 & i24_uimm0_2 = 0 & i24_rD & i24_mB { *:4 i24_mB = i24_rD; }
     :bn.op0_1 i24_rD,i24_rA,i24_simm0_8 is i24_opcode = 0x00 & i24_uimm0_2 = 1 & i24_rD & i24_rA & i24_simm0_8 unimpl
